@@ -2,6 +2,8 @@
 Django models creation module
 """
 from django.db import models
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.hashers import make_password
 
 
 class Users(models.Model):
@@ -10,8 +12,16 @@ class Users(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=128, validators=[validate_password])
     address = models.CharField(max_length=250, unique=True)
+
+    def clean(self):
+        if self.password and not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super(Users, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.username
@@ -26,7 +36,6 @@ class Activities(models.Model):
     activity_id = models.AutoField(primary_key=True)
     activity_name = models.CharField(max_length=50, unique=True)
     activity_desc = models.CharField(max_length=150, unique=True)
-    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.activity_name
