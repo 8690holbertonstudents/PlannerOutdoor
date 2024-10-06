@@ -2,29 +2,68 @@
 Django models creation module
 """
 from django.db import models
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.hashers import make_password
 
 
-class Users(models.Model):
+class UserManager(BaseUserManager):
+    def create_user(self, username, email, address, password=None):
+        """
+        """
+        if not username:
+            raise ValueError('username is required')
+        if not email:
+            raise ValueError('email is required')
+        if not address:
+            raise ValueError('address is required')
+
+        user = self.model(username=username,
+                          email=self.normalize_email(email), address=address)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, address, password=None):
+        """
+        """
+        user = self.create_user(
+            username=username, email=email, address=address, password=password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+
+class Users(AbstractBaseUser):
     """
     """
-    user_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128, validators=[validate_password])
     address = models.CharField(max_length=250, unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
-    def clean(self):
-        if self.password and not self.password.startswith('pbkdf2_'):
-            self.password = make_password(self.password)
+    objects = UserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'address']
 
     def save(self, *args, **kwargs):
-        self.clean()
-        super(Users, self).save(*args, **kwargs)
+        if self.password and not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.username
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
 
     class Meta:
         verbose_name_plural = "Users"
