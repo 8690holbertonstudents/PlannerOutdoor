@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +171,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# External openweather API key (6 months free trial)
+OPENWEATHER_API_KEY = os.environ.get('OPENWEATHER_API_KEY')

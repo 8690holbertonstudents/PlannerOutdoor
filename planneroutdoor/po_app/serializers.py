@@ -8,7 +8,7 @@ from .models import Users, Activities, Allergens, UserActivities, UserAllergens,
 class UsersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Users
-        fields = ['url', 'user_id', 'username', 'email', 'password', 'address']
+        fields = ['url', 'id', 'username', 'email', 'password', 'address']
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])

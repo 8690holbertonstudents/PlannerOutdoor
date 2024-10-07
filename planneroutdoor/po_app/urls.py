@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import UsersViewSet, ActivitiesViewSet, AllergensViewSet, UserActivitiesViewSet, UserAllergensViewSet, PlannedActivitiesViewSet
+from .views import UsersViewSet, ActivitiesViewSet, AllergensViewSet, UserActivitiesViewSet, UserAllergensViewSet, PlannedActivitiesViewSet, WeatherViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -9,6 +9,7 @@ router.register(r'po_app/Allergens', AllergensViewSet)
 router.register(r'po_app/UserActivities', UserActivitiesViewSet)
 router.register(r'po_app/UserAllergens', UserAllergensViewSet)
 router.register(r'po_app/PlannedActivities', PlannedActivitiesViewSet)
+router.register(r'po_app/Weather', WeatherViewSet, basename='weather')
 
 """app_name = 'po_app'"""
 urlpatterns = [
