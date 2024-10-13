@@ -1,5 +1,12 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+//import Vue from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "@/views/HomeView.vue";
+import WeatherView from "@/views/WeatherView.vue";
+
+//import WeatherView from "@/views/WeatherView.vue";
+//import CreateAccountView from "@/views/CreateAccountView.vue";
+//import WeatherDetailsView from "@/views/WeatherDetailsView.vue";
+//import AccountManageView from "@/views/AccountManageView.vue";
 
 const routes = [
   {
@@ -8,19 +15,42 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/weather",
+    name: "weather",
+    component: WeatherView,
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 });
 
 export default router;
+
+/*
+Vue.use(Router);
+
+export default new Router({
+  mode: "history",
+  routes: [
+    { path: "/", name: "home", component: HomeView },
+    { path: "/weather", name: "weather", component: WeatherView },
+    {
+      path: "/create-account",
+      name: "createAccount",
+      component: CreateAccountView,
+    },
+    {
+      path: "/weather-details",
+      name: "weatherDetails",
+      component: WeatherDetailsView,
+    },
+    {
+      path: "/account-manage",
+      name: "accountManage",
+      component: AccountManageView,
+    },
+  ],
+});
+*/
