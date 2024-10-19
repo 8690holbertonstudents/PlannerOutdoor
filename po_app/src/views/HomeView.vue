@@ -1,18 +1,36 @@
 <template>
-  <body>
-    <div class="home">
-      <h1>The Homepage</h1>
+  <div class="home-container">
+    <div class="title-item">
+      <h1>Welcome to PlannerOutdoor !</h1>
+      <p>The goal of this project is.....in progress</p>
     </div>
-  </body>
+    <div>
+      <GeolocateView />
+      <!-- Composant pour se géolocaliser -->
+    </div>
+  </div>
 </template>
 
 <script>
-//import PageHeader from "@/components/PageHeader.vue";
-//import PageFooter from "@/components/PageFooter.vue";
+import GeolocateView from "@/components/GeolocateView.vue";
 
 export default {
-  name: "HomeView",
-  /*components: {
-  },*/
+  components: {
+    GeolocateView,
+  },
 };
 </script>
+
+<style scoped>
+.home-container {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+p {
+  text-align: center;
+}
+</style>

@@ -1,8 +1,6 @@
 <template>
   <footer>
-    <div>
-      <p>PlannerOutdoor portfolio project</p>
-    </div>
+    <div id="footer-text">PlannerOutdoor portfolio project</div>
   </footer>
 </template>
 
@@ -14,13 +12,19 @@ export default {
 
 <style scoped>
 footer {
-  height: 50px;
-  width: 98%;
-  background-color: #209fe8;
-  border-radius: 5px;
-  color: white;
-  margin: 0 auto;
-  padding: 10px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  height: var(--header-footer-height);
+  width: var(--header-footer-width);
+  background-color: var(--color-header-footer);
+  color: var(--color-white);
+  border-radius: var(--header-footer-border);
+  box-shadow: var(--header-footer-shadow);
+}
+#footer-text {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-small);
 }
 </style>
