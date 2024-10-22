@@ -2,9 +2,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import WeatherView from "@/views/WeatherView.vue";
+import CreateAccountView from "@/views/CreateAccountView.vue";
 
 //import WeatherView from "@/views/WeatherView.vue";
-//import CreateAccountView from "@/views/CreateAccountView.vue";
 //import WeatherDetailsView from "@/views/WeatherDetailsView.vue";
 //import AccountManageView from "@/views/AccountManageView.vue";
 
@@ -18,6 +18,11 @@ const routes = [
     path: "/Weather",
     name: "Weather",
     component: WeatherView,
+  },
+  {
+    path: "/Login",
+    name: "Login",
+    component: CreateAccountView,
   },
 ];
 

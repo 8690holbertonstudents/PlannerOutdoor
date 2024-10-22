@@ -6,7 +6,7 @@
     </div>
     <div>
       <GeolocateView />
-      <!-- Composant pour se géolocaliser -->
+      <!-- Not made yet !!!!!! -->
     </div>
   </div>
 </template>

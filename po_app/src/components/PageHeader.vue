@@ -1,7 +1,7 @@
 <template>
   <header class="header-container">
     <div id="app-logo">
-      <img src="/images/po_white.png" alt="app-logo" />
+      <img src="/images/po_white.png" alt="app-logo" @click="goToHome" />
     </div>
     <div id="locate-item">
       <LocateView />
@@ -22,6 +22,11 @@ export default {
     LocateView,
     LoginView,
   },
+  methods: {
+    goToHome() {
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
@@ -38,17 +43,18 @@ export default {
   box-shadow: var(--header-footer-shadow);
 }
 
-.header-container > #login-item {
+#login-item {
   padding-right: 10px;
 }
 
-.header-container > #locate-item {
+#locate-item {
   position: center;
 }
 
-.header-container > #app-logo img {
+#app-logo img {
   padding-left: 10px;
   padding-top: 8%;
   height: 20px;
+  cursor: pointer;
 }
 </style>

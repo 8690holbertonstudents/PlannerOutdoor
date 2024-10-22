@@ -25,7 +25,7 @@ export default {
       this.$emit("close");
     },
     goToLogin() {
-      this.$router.push("/login"); // Assurez-vous que la route vers la page de login est correcte.
+      this.$router.push("/Login");
     },
   },
 };

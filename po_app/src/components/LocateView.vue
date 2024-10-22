@@ -19,7 +19,6 @@ export default {
   methods: {
     submitCity() {
       if (this.city) {
-        // Redirige vers WeatherView avec la localisation en tant que query param
         this.$router.push({
           name: "Weather",
           query: { city: this.city },

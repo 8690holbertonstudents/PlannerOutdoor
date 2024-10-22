@@ -1,10 +1,10 @@
 <template>
   <main class="main-container">
     <section>
-      <h2 v-if="loading">Weather at {{ city.name }}</h2>
+      <h2 v-if="success">Weather at {{ city.name }}</h2>
       <h3 v-else>No weather data or bad city name</h3>
     </section>
-    <section v-show="loading" class="weather-container">
+    <section v-show="success" class="weather-container">
       <div
         v-for="(item, index) in forecast.list"
         :key="index"
@@ -42,7 +42,7 @@ export default {
     return {
       city: {},
       forecast: {},
-      loading: true,
+      success: false,
       showModal: false,
       userLoggedIn: false,
     };
@@ -54,21 +54,20 @@ export default {
     "$route.query.city": "fetchWeatherData",
   },
   methods: {
-    fetchWeatherData() {
-      const city = this.$route.query.city;
-      this.loading = true;
-
-      axios
-        .get(`http://localhost:8020/po_app/Weather/?city=${city}`)
-        .then((response) => {
-          this.city = response.data.city;
-          this.forecast = response.data;
-          this.loading = true;
-        })
-        .catch((error) => {
-          console.error("Request error:", error);
-          this.loading = false;
-        });
+    async fetchWeatherData() {
+      try {
+        const city = this.$route.query.city;
+        this.success = false;
+        const openWeatherMapApiResponse = await axios.get(
+          `http://localhost:8020/po_app/Weather/?city=${city}`
+        );
+        this.city = openWeatherMapApiResponse.data.city;
+        this.forecast = openWeatherMapApiResponse.data;
+        this.success = true;
+      } catch (error) {
+        console.error("Request error:", error);
+        this.success = false;
+      }
     },
     formatMonthYear(timestamp) {
       const date = new Date(timestamp * 1000);
@@ -96,10 +95,8 @@ export default {
     },
     handleDetailsClick() {
       if (this.userLoggedIn) {
-        // Placeholder pour rediriger vers les détails de la météo.
-        console.log("Redirection vers les détails météo...");
+        // Weather Details not implemented
       } else {
-        // Affiche le modal si l'utilisateur n'est pas connecté.
         this.showModal = true;
       }
     },
