@@ -2,10 +2,10 @@
   <Teleport to="body">
     <div v-if="show" class="modal">
       <div class="modal-content">
-        <p>Please login or create an account to view weather details</p>
+        <p>Are you sure you want to logout ?</p>
         <div class="button-container">
-          <button @click="goToLogin">Login</button>
-          <button @click="closeModal">Close</button>
+          <button @click="goToLogOut">Logout</button>
+          <button @click="cancelModal">Cancel</button>
         </div>
       </div>
     </div>
@@ -21,14 +21,15 @@ export default {
     },
   },
   methods: {
-    closeModal() {
+    cancelModal() {
       this.$emit("close");
     },
-    goToLogin() {
-      this.$router.push({
-        path: "/Login",
-        query: { next: this.$route.fullPath },
-      });
+    goToLogOut() {
+      document.cookie =
+        "po_app_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure;";
+      this.$store.commit("logout");
+      this.$emit("close");
+      this.$router.push({ path: "/" });
     },
   },
 };

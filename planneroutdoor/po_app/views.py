@@ -2,6 +2,7 @@ import requests
 from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -75,10 +76,62 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='account')
+    @action(detail=False, methods=['get', 'put'], permission_classes=[IsAuthenticated], url_path='Account')
     def account(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+        """
+        """
+        user = request.user
+        try:
+            if request.method == 'GET':
+                serializer = self.get_serializer(user)
+                return Response(serializer.data)
+            elif request.method == 'PUT':
+                serializer = self.get_serializer(
+                    user, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'Error occurred while processing method'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['post'], permission_classes=[], url_path='Register')
+    def register(self, request):
+        """
+        """
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'An error occurred during registration.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['post'], url_path='RecoverPassword')
+    def recover_password(self, request):
+        username = request.data.get('username')
+        email = request.data.get('email')
+        new_password = request.data.get('newPassword')
+
+        try:
+            user = Users.objects.get(username=username, email=email)
+            user.password = make_password(new_password)
+            user.save()
+            return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
+        except Users.DoesNotExist:
+            return Response({'error': 'Bad couple username & email'}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['delete'], permission_classes=[IsAuthenticated], url_path='DeleteAccount')
+    def delete_account(self, request):
+        try:
+            user = request.user
+            user.delete()
+            return Response({'message': 'Account deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({'error': 'Error while deleting account'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ActivitiesViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):

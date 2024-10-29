@@ -17,6 +17,8 @@
         required
       />
       <button type="submit">Register</button>
+      <p v-if="successMsg">{{ successMsg }}</p>
+      <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
     </form>
     <form @submit.prevent="login" class="account-item">
       <h3>Already have an account?</h3>
@@ -34,17 +36,24 @@
       />
       <div class="button-container">
         <button type="submit">Login</button>
-        <button @click="recoverPassword">Forgot Password?</button>
+        <button @click="showRecoveryModal = true">Forgot Password?</button>
+        <RecoveryPrompt
+          v-if="showRecoveryModal"
+          :show="showRecoveryModal"
+          @close="showRecoveryModal = false"
+        />
       </div>
     </form>
   </div>
 </template>
 
 <script>
-//import axios from "axios";
+import axios from "axios";
+import RecoveryPrompt from "@/components/RecoveryPrompt.vue";
 
 export default {
   name: "CreateAccountView",
+  components: { RecoveryPrompt },
   data() {
     return {
       username: "",
@@ -53,12 +62,58 @@ export default {
       address: "",
       loginUsername: "",
       loginPassword: "",
+      successMsg: "",
+      errorMsg: "",
+      recoveryUsername: "",
+      recoveryEmail: "",
+      recoveryMsg: "",
+      showRecoveryModal: false,
     };
   },
   methods: {
-    register() {},
-    login() {},
-    recoverPassword() {},
+    async register() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8020/po_app/Users/Register/",
+          {
+            username: this.username,
+            email: this.email,
+            password: this.password,
+            address: this.address,
+          }
+        );
+
+        if (response.status === 201) {
+          this.successMsg = `${this.username} account successfully created`;
+          this.clearForm();
+        }
+      } catch (error) {
+        this.errorMsg =
+          "An error occurred during registration. Please try again.";
+        console.error("Error registering user:", error);
+      }
+    },
+    async login() {
+      try {
+        const response = await axios.post("http://localhost:8020/api/token/", {
+          username: this.loginUsername,
+          password: this.loginPassword,
+        });
+        const token = response.data.access;
+        this.$store.dispatch("login", { username: this.loginUsername, token });
+        const nextRoute = this.$route.query.next || "/Account";
+        this.$router.push(nextRoute);
+      } catch (error) {
+        console.error("Login failed:", error);
+        alert("Login failed. Bad username or password");
+      }
+    },
+    clearForm() {
+      this.username = "";
+      this.email = "";
+      this.password = "";
+      this.address = "";
+    },
   },
 };
 </script>
@@ -110,5 +165,10 @@ button {
   border-radius: var(--header-footer-border);
   font-family: var(--font-family);
   color: var(--color-white);
+  cursor: pointer;
+}
+
+.error {
+  color: var(--color-error-msg);
 }
 </style>

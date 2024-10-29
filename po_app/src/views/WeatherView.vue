@@ -10,18 +10,22 @@
         :key="index"
         class="weather-item"
       >
-        <p>{{ formatMonthYear(item.dt) }}</p>
-        <p>{{ formatDay(item.dt) }}</p>
         <p>
-          {{ convertTemp(item.temp.day) }}°C /
-          {{ convertToFahrenheit(item.temp.day) }}°F
+          <ConvertToDate :timestamp="item.dt" />
+        </p>
+        <p>
+          <ConvertToDay :timestamp="item.dt" />
+        </p>
+        <p>
+          <ConvertToTemp :tempK="item.temp.day" unit="C" /> /
+          <ConvertToTemp :tempK="item.temp.day" unit="F" />
         </p>
         <img
           v-if="item.weather[0].icon"
           :src="`http://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`"
           :alt="item.weather[0].description"
         />
-        <p><button @click="handleDetailsClick">Details</button></p>
+        <p><button @click="goToDetails(item)">Details</button></p>
       </div>
     </section>
     <LoginPrompt
@@ -35,16 +39,18 @@
 <script>
 import axios from "axios";
 import LoginPrompt from "@/components/LoginPrompt.vue";
+import ConvertToDate from "@/components/ConvertToDate.vue";
+import ConvertToDay from "@/components/ConvertToDay.vue";
+import ConvertToTemp from "@/components/ConvertToTemp.vue";
 
 export default {
-  components: { LoginPrompt },
+  components: { LoginPrompt, ConvertToDate, ConvertToDay, ConvertToTemp },
   data() {
     return {
       city: {},
       forecast: {},
       success: false,
       showModal: false,
-      userLoggedIn: false,
     };
   },
   created() {
@@ -52,6 +58,11 @@ export default {
   },
   watch: {
     "$route.query.city": "fetchWeatherData",
+  },
+  computed: {
+    userLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
   },
   methods: {
     async fetchWeatherData() {
@@ -69,33 +80,15 @@ export default {
         this.success = false;
       }
     },
-    formatMonthYear(timestamp) {
-      const date = new Date(timestamp * 1000);
-      const month = date
-        .toLocaleString("en-EN", { month: "long" })
-        .toUpperCase();
-      const year = date.getFullYear();
-      return `${month} ${year}`;
-    },
-    formatDay(timestamp) {
-      const date = new Date(timestamp * 1000);
-      const dayOfWeek = date
-        .toLocaleDateString("en-EN", { weekday: "long" })
-        .toUpperCase();
-      const dayOfMonth = date.getDate();
-      return `${dayOfWeek} ${dayOfMonth}`;
-    },
-    convertTemp(tempK) {
-      const tempCelcius = (tempK - 273.15).toFixed(1);
-      return `${tempCelcius}`;
-    },
-    convertToFahrenheit(tempK) {
-      const tempFahrenheit = (((tempK - 273.15) * 9) / 5 + 32).toFixed(1);
-      return `${tempFahrenheit}`;
-    },
-    handleDetailsClick() {
+    goToDetails(item) {
       if (this.userLoggedIn) {
-        // Weather Details not implemented
+        this.$router.push({
+          name: "WeatherDetails",
+          params: {
+            itemCity: this.city.name,
+            itemDt: item.dt,
+          },
+        });
       } else {
         this.showModal = true;
       }
@@ -125,7 +118,7 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 0% 1% 1% 1%;
+  margin: 0% 1.5% 0% 1%;
 }
 
 .weather-item {
@@ -149,5 +142,6 @@ button {
   border-radius: var(--header-footer-border);
   font-family: var(--font-family);
   color: var(--color-white);
+  cursor: pointer;
 }
 </style>

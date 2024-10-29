@@ -20,6 +20,11 @@ class UsersSerializer(serializers.HyperlinkedModelSerializer):
                 validated_data['password'])
         return super(UsersSerializer, self).update(instance, validated_data)
 
+    def validate_username(self, value):
+        if Users.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username already exists.")
+        return value
+
 
 class ActivitiesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

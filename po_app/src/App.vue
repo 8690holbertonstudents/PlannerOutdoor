@@ -32,6 +32,7 @@ export default {
   --color-light-grey: #f3f3f3;
   --color-medium-grey: #726a6a;
   --color-dark-grey: #353535;
+  --color-error-msg: #c63434;
   --color-header-footer: #209fe8;
   --color-background-modal: rgba(0, 0, 0, 0.5);
   --header-footer-shadow: 5px 5px 5px var(--color-medium-grey);
