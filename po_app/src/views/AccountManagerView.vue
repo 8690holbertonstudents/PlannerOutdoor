@@ -22,6 +22,48 @@
         @close="showDeleteAccountModal = false"
       />
     </form>
+    <div class="account-item">
+      <h3>Your prefered activities</h3>
+      <div
+        v-for="activity in activitiesList"
+        :key="activity.activity_id"
+        class="checkbox-container"
+      >
+        <label>
+          <input type="checkbox" :value="activity.activity_id" />
+          <span
+            @mouseover="showActivityDesc(activity)"
+            @mouseleave="hideActivityDesc(activity)"
+          >
+            {{ activity.activity_name }}
+          </span>
+        </label>
+        <p v-if="activity.showDescription" class="description">
+          {{ activity.activity_desc }}
+        </p>
+      </div>
+    </div>
+    <div class="account-item">
+      <h3>Your knewn allergens</h3>
+      <div
+        v-for="allergen in allergensList"
+        :key="allergen.allergen_id"
+        class="checkbox-container"
+      >
+        <label>
+          <input type="checkbox" :value="allergen.allergen_id" />
+          <span
+            @mouseover="showAllergenDesc(allergen)"
+            @mouseleave="hideAllergenDesc(allergen)"
+          >
+            {{ allergen.allergen_name }}
+          </span>
+        </label>
+        <p v-if="allergen.showDescription" class="description">
+          {{ allergen.allergen_desc }}
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,10 +81,14 @@ export default {
       successMsg: "",
       errorMsg: "",
       showDeleteAccountModal: false,
+      activitiesList: [],
+      allergensList: [],
     };
   },
-  async created() {
-    await this.getUserAccountInfo();
+  created() {
+    this.getUserAccountInfo();
+    this.fetchActivitiesList();
+    this.fetchAllergensList();
   },
   methods: {
     openDeleteAccountModal() {
@@ -93,6 +139,48 @@ export default {
         }
       }
     },
+    async fetchActivitiesList() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8020/po_app/Activities/",
+          {
+            headers: {
+              Authorization: `Bearer ${this.$store.getters.getAccessToken}`,
+            },
+          }
+        );
+        this.activitiesList = response.data;
+      } catch (error) {
+        console.error("Error fetching activities list:", error);
+      }
+    },
+    async fetchAllergensList() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8020/po_app/Allergens/",
+          {
+            headers: {
+              Authorization: `Bearer ${this.$store.getters.getAccessToken}`,
+            },
+          }
+        );
+        this.allergensList = response.data;
+      } catch (error) {
+        console.error("Error fetching allergens list:", error);
+      }
+    },
+    showActivityDesc(activity) {
+      activity.showDescription = true;
+    },
+    hideActivityDesc(activity) {
+      activity.showDescription = false;
+    },
+    showAllergenDesc(allergen) {
+      allergen.showDescription = true;
+    },
+    hideAllergenDesc(allergen) {
+      allergen.showDescription = false;
+    },
   },
 };
 </script>
@@ -100,12 +188,12 @@ export default {
 <style scoped>
 .account-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-grow: 1;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
   margin-top: 20px;
-  gap: 30px;
+  gap: 25px;
 }
 
 .account-item {
@@ -145,6 +233,33 @@ button {
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  margin-left: 40px;
+  align-items: flex-start;
+  vertical-align: top;
+  width: 100%;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline;
+  width: auto;
+  margin-right: 7px;
+}
+
+.description {
+  display: inline-block;
+  color: var(--color-header-footer);
+  padding: 5px;
+  border-radius: 4px;
+  margin-top: 5px;
+  font-size: var(--font-size-small);
+  max-width: 300px;
 }
 
 .error {

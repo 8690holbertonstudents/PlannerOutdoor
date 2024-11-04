@@ -1,7 +1,7 @@
 <template>
   <main class="main-container">
     <section>
-      <h2 v-if="success">Weather at {{ city.name }}</h2>
+      <h2 v-if="success">Weather at {{ city }}</h2>
       <h3 v-else>No weather data or bad city name</h3>
     </section>
     <section v-show="success" class="weather-container">
@@ -57,7 +57,8 @@ export default {
     this.fetchWeatherData();
   },
   watch: {
-    "$route.query.city": "fetchWeatherData",
+    "$route.query.lat": "fetchWeatherData",
+    "$route.query.lon": "fetchWeatherData",
   },
   computed: {
     userLoggedIn() {
@@ -67,12 +68,14 @@ export default {
   methods: {
     async fetchWeatherData() {
       try {
-        const city = this.$route.query.city;
+        const lat = this.$route.query.lat;
+        const lon = this.$route.query.lon;
         this.success = false;
         const openWeatherMapApiResponse = await axios.get(
-          `http://localhost:8020/po_app/Weather/?city=${city}`
+          `http://localhost:8020/po_app/Weather/?lat=${lat}&lon=${lon}`
         );
-        this.city = openWeatherMapApiResponse.data.city;
+        const cityData = openWeatherMapApiResponse.data.city;
+        this.city = `${cityData.name}, ${cityData.country}`;
         this.forecast = openWeatherMapApiResponse.data;
         this.success = true;
       } catch (error) {
@@ -85,8 +88,12 @@ export default {
         this.$router.push({
           name: "WeatherDetails",
           params: {
-            itemCity: this.city.name,
+            itemCity: this.city,
             itemDt: item.dt,
+          },
+          query: {
+            lat: this.$route.query.lat,
+            lon: this.$route.query.lon,
           },
         });
       } else {
@@ -98,12 +105,12 @@ export default {
 </script>
 
 <style scoped>
-body {
+/*body {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-}
+}*/
 
 .main-container {
   display: flex;

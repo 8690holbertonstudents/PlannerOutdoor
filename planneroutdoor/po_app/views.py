@@ -71,7 +71,7 @@ class IsOwnerOrAdmin(permissions.BasePermission):
 
 class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     """
-    Django serializer for Users model.
+    Django viewset for Users model.
     """
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
@@ -136,7 +136,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
 class ActivitiesViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
-    Django serializer for Activities model.
+    Django viewset for Activities model.
     """
     queryset = Activities.objects.all()
     serializer_class = ActivitiesSerializer
@@ -144,7 +144,7 @@ class ActivitiesViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
 
 class AllergensViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
-    Django serializer for Allergens model.
+    Django viewset for Allergens model.
     """
     queryset = Allergens.objects.all()
     serializer_class = AllergensSerializer
@@ -152,7 +152,7 @@ class AllergensViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
 
 class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     """
-    Django serializer for UserActivities model.
+    Django viewset for UserActivities model.
     """
     queryset = UserActivities.objects.all()
     serializer_class = UserActivitiesSerializer
@@ -160,7 +160,7 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
 class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     """
-    Django serializer for UserAllergens model.
+    Django viewset for UserAllergens model.
     """
     queryset = UserAllergens.objects.all()
     serializer_class = UserAllergensSerializer
@@ -168,7 +168,7 @@ class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
 class PlannedActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     """
-    Django serializer for PlannedActivities model.
+    Django viewset for PlannedActivities model.
     """
     queryset = PlannedActivities.objects.all()
     serializer_class = PlannedActivitiesSerializer
@@ -214,29 +214,124 @@ class CookieTokenRefreshView(TokenRefreshView):
         return response
 
 
+class GeoCodingViewSet(viewsets.ViewSet):
+    """
+    ViewSet for retrieving geographic coordinates.
+    Using OpenWeathermap Geocoding API.
+    """
+
+    def list(self, request):
+        location = request.query_params.get('location')
+        if not location:
+            return Response({"error": "Please provide a location"}, status=status.HTTP_400_BAD_REQUEST)
+
+        api_key = settings.OPENWEATHER_API_KEY
+        geocoding_url = f"http://api.openweathermap.org/geo/1.0/direct?q={
+            location}&limit=5&appid={api_key}"
+
+        try:
+            response = requests.get(geocoding_url)
+            data = response.json()
+            if response.status_code != 200 or not data:
+                return Response({"error": "Location not found"}, status=response.status_code)
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class WeatherViewSet(viewsets.ViewSet):
     """
-    Django serializer for weather data from external OpenWeather API.
+    Django viewset for weather data for 16 days.
+    Using OpenWeathermap Geocoding API.
     """
     permission_classes = [AllowAny]
 
     def list(self, request):
         """
-        Retrieve weather data for a specified city.
+        Retrieve weather data for a specified city or by latitude and longitude.
         """
-        city = request.query_params.get('city')
-        if not city:
-            return Response({"error": "Please enter a city"}, status=status.HTTP_400_BAD_REQUEST)
-
         api_key = settings.OPENWEATHER_API_KEY
-        url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={
-            city}&cnt=16&appid={api_key}"
+        city = request.query_params.get('city')
+        lat = request.query_params.get('lat')
+        lon = request.query_params.get('lon')
+
+        if lat and lon:
+            url = f"http://api.openweathermap.org/data/2.5/forecast/daily?lat={
+                lat}&lon={lon}&cnt=16&appid={api_key}"
+        elif city:
+            url = f"http://api.openweathermap.org/data/2.5/forecast/daily?q={
+                city}&cnt=16&appid={api_key}"
+        else:
+            return Response({"error": "Please provide a city name or latitude and longitude"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             response = requests.get(url)
             response.raise_for_status()
+            data = response.json()
+            return Response(data, status=status.HTTP_200_OK)
         except requests.exceptions.RequestException as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        data = response.json()
-        return Response(data, status=status.HTTP_200_OK)
+
+class WeatherDetailsViewSet(viewsets.ViewSet):
+    """
+    Django viewset for weather details for the selected day.
+    Using OpenWeathermap Geocoding API.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        """
+        Retrieve weather data for a specified city and a choosen day.
+        """
+        api_key = settings.OPENWEATHER_API_KEY
+        lat = request.query_params.get('lat')
+        lon = request.query_params.get('lon')
+
+        if not lat or not lon:
+            return Response({"error": "Latitude, longitude, are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        url = f"http://api.openweathermap.org/data/2.5/forecast/daily?lat={
+            lat}&lon={lon}&cnt=16&appid={api_key}"
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return Response(data, status=status.HTTP_200_OK)
+
+        except requests.exceptions.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WeatherPollutionViewSet(viewsets.ViewSet):
+    """
+    Django viewset for weather pollution for the selected day (maxi 4 days).
+    Using OpenWeathermap Geocoding API.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        """
+        Retrieve pollution data for a specified city and a choosen day.
+        """
+        api_key = settings.OPENWEATHER_API_KEY
+        lat = request.query_params.get('lat')
+        lon = request.query_params.get('lon')
+
+        if not lat or not lon:
+            return Response({"error": "Latitude, longitude, are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        url = f"http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat={
+            lat}&lon={lon}&appid={api_key}"
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            return Response(data, status=status.HTTP_200_OK)
+
+        except requests.exceptions.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

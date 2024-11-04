@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <div id="footer-text">PlannerOutdoor portfolio project</div>
+    <div id="footer-text">PlannerOutdoor portfolio project - November 2024</div>
   </footer>
 </template>
 
