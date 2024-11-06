@@ -1,6 +1,6 @@
 <template>
   <main class="weather-details-container">
-    <section>
+    <section class="details-item">
       <h2>
         Weather at {{ itemCity }} - <ConvertToDate :timestamp="itemDt" /> -
         <ConvertToDay :timestamp="itemDt" />
@@ -108,6 +108,7 @@ import ConvertWindDirection from "@/components/ConvertWindDirection.vue";
 import AirPollutionAverage from "@/components/AirPollutionAverage.vue";
 
 export default {
+  name: "WeatherDetailsView",
   components: {
     ConvertToDate,
     ConvertToDay,
@@ -196,7 +197,8 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  flex-grow: 1;
+  flex-basis: 100vh;
+  margin-top: var(--header-footer-height);
 }
 
 .details-container {
@@ -204,14 +206,15 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 0% 1.5% 0% 1%;
+  /*margin: 0% 1.5% 0% 1%;*/
+  margin-bottom: var(--header-footer-height);
+  padding-bottom: 20px;
 }
 
 .details-item {
-  background-color: var(--color-white);
-  box-shadow: var(--header-footer-shadow);
-  border: 2px solid var(--color-light-grey);
-  border-radius: var(--header-footer-border);
+  background-color: var(--color-background-item);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--default-radius);
   margin: 10px;
   padding: 20px;
   min-width: 200px;

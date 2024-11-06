@@ -22,6 +22,7 @@
 import axios from "axios";
 
 export default {
+  name: "LocateView",
   data() {
     return {
       city: "",
@@ -65,12 +66,11 @@ export default {
   position: relative;
 }
 input {
-  height: 10px;
+  height: 15px;
   width: 200px;
   padding: 8px;
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   border: 1px solid var(--color-white);
-  font-family: var(--font-family);
   font-size: var(--font-size-small);
 }
 ul {
@@ -78,19 +78,21 @@ ul {
   padding: 0;
   margin: 0;
   border: 2px solid var(--color-medium-grey);
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   background: var(--color-white);
   position: absolute;
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
 }
+
 li {
   color: var(--color-black);
   font-size: var(--font-size-small);
   padding: 8px;
   cursor: pointer;
 }
+
 li:hover {
   background-color: var(--color-light-grey);
 }

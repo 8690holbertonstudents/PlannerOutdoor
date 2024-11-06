@@ -1,10 +1,10 @@
 <template>
-  <main class="main-container">
-    <section>
+  <div class="main-container">
+    <div class="main-item">
       <h2 v-if="success">Weather at {{ city }}</h2>
       <h3 v-else>No weather data or bad city name</h3>
-    </section>
-    <section v-show="success" class="weather-container">
+    </div>
+    <div v-show="success" class="weather-container">
       <div
         v-for="(item, index) in forecast.list"
         :key="index"
@@ -27,13 +27,13 @@
         />
         <p><button @click="goToDetails(item)">Details</button></p>
       </div>
-    </section>
+    </div>
     <LoginPrompt
       v-if="showModal"
       :show="showModal"
       @close="showModal = false"
     />
-  </main>
+  </div>
 </template>
 
 <script>
@@ -44,6 +44,7 @@ import ConvertToDay from "@/components/ConvertToDay.vue";
 import ConvertToTemp from "@/components/ConvertToTemp.vue";
 
 export default {
+  name: "WeatherView",
   components: { LoginPrompt, ConvertToDate, ConvertToDay, ConvertToTemp },
   data() {
     return {
@@ -105,38 +106,45 @@ export default {
 </script>
 
 <style scoped>
-/*body {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}*/
-
 .main-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  flex-basis: 100vh;
+  margin-top: var(--margin-header-footer);
+}
+
+.main-item {
+  background-color: var(--color-background-item);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--default-radius);
+  margin: 10px;
+  padding: 20px;
+  align-self: center;
+  text-align: center;
   flex-grow: 1;
 }
 
 .weather-container {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 0% 1.5% 0% 1%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-grow: 19;
+  margin-bottom: var(--margin-header-footer);
+  padding-bottom: 20px;
 }
 
 .weather-item {
-  background-color: var(--color-white);
-  box-shadow: var(--header-footer-shadow);
-  border: 2px solid var(--color-light-grey);
-  border-radius: var(--header-footer-border);
+  background-color: var(--color-background-item);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--default-radius);
   margin: 10px;
   padding: 20px;
   min-width: 200px;
-  min-height: 100px;
+  max-height: 330px;
   text-align: center;
   font-size: var(--font-size-medium);
 }
@@ -146,7 +154,7 @@ button {
   width: 80px;
   background-color: var(--color-header-footer);
   border: 0;
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;

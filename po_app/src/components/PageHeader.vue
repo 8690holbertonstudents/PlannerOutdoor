@@ -39,12 +39,11 @@ export default {
   width: var(--header-footer-width);
   background-color: var(--color-header-footer);
   color: var(--color-white);
-  border-radius: var(--header-footer-border);
-  box-shadow: var(--header-footer-shadow);
 }
 
 #login-item {
-  padding-right: 10px;
+  padding-right: 1rem;
+  font-weight: var(--font-weight-bold);
 }
 
 #locate-item {
@@ -52,9 +51,9 @@ export default {
 }
 
 #app-logo img {
-  padding-left: 10px;
-  padding-top: 8%;
-  height: 20px;
+  padding-left: 1rem;
+  padding-top: 5%;
+  height: 30px;
   cursor: pointer;
 }
 </style>

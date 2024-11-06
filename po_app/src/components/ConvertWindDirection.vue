@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  name: "ConvertWindDirection",
   props: {
     degrees: {
       type: Number,

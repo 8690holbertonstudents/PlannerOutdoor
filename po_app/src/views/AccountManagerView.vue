@@ -2,14 +2,16 @@
   <div class="account-container">
     <form @submit.prevent="updateUserAccountInfo" class="account-item">
       <h3 class="title-item">Account informations</h3>
-      <label>Username:</label>
-      <input v-model="username" />
+      <div class="input-container">
+        <label>Username:</label>
+        <input v-model="username" />
 
-      <label>Email:</label>
-      <input v-model="email" type="email" />
+        <label>Email:</label>
+        <input v-model="email" type="email" />
 
-      <label>Address:</label>
-      <input v-model="address" />
+        <label>Address:</label>
+        <input v-model="address" />
+      </div>
       <p v-if="successMsg">{{ successMsg }}</p>
       <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
       <div class="button-container">
@@ -42,6 +44,10 @@
           {{ activity.activity_desc }}
         </p>
       </div>
+      <div class="button-container">
+        <button type="submit">Validate</button>
+        <!--button @click="openDeleteAccountModal">Delete Account</button-->
+      </div>
     </div>
     <div class="account-item">
       <h3>Your knewn allergens</h3>
@@ -63,6 +69,10 @@
           {{ allergen.allergen_desc }}
         </p>
       </div>
+      <div class="button-container">
+        <button type="submit">Validate</button>
+        <!--button @click="openDeleteAccountModal">Delete Account</button-->
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +82,7 @@ import axios from "axios";
 import DeleteAccountPrompt from "@/components/DeleteAccountPrompt.vue";
 
 export default {
+  name: "AccountManagerView",
   components: { DeleteAccountPrompt },
   data() {
     return {
@@ -190,17 +201,18 @@ export default {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  overflow-y: auto;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 20px;
+  margin-top: var(--margin-header-footer);
+  margin-bottom: var(--margin-header-footer);
   gap: 25px;
 }
 
 .account-item {
-  background-color: var(--color-white);
-  box-shadow: var(--header-footer-shadow);
-  border: 2px solid var(--color-light-grey);
-  border-radius: var(--header-footer-border);
+  background-color: var(--color-background-item);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--default-radius);
   margin: 10px;
   padding: 20px;
   width: 350px;
@@ -209,15 +221,34 @@ export default {
   font-size: var(--font-size-medium);
 }
 
+.input-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.input-container > label {
+  padding-left: 0.6em;
+  margin-bottom: 0.6em;
+  font-size: var(--font-size-medium);
+}
+
 input {
+  border-radius: var(--default-radius);
+  border: solid 0px;
   padding: 10px;
   margin-bottom: 10px;
   width: 90%;
 }
 
+label {
+  text-align: left;
+}
+
 .button-container {
   display: flex;
   flex-direction: row;
+  padding-top: 1em;
   gap: 50px;
   justify-content: center;
   align-items: center;
@@ -229,7 +260,7 @@ button {
   row-gap: 50 px;
   border: 0;
   background-color: var(--color-header-footer);
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;
@@ -249,7 +280,7 @@ input[type="checkbox"],
 input[type="radio"] {
   display: inline;
   width: auto;
-  margin-right: 7px;
+  margin-right: 15px;
 }
 
 .description {

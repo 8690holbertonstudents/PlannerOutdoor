@@ -13,19 +13,12 @@
       </h3>
       <h2>Work in progress !!!</h2>
     </div>
-    <div>
-      <GeolocateView />
-    </div>
   </div>
 </template>
 
 <script>
-import GeolocateView from "@/components/GeolocateView.vue";
-
 export default {
-  components: {
-    GeolocateView,
-  },
+  name: "HomeView",
 };
 </script>
 
@@ -33,14 +26,18 @@ export default {
 .home-container {
   display: flex;
   flex-direction: row;
-  flex-grow: 1;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  margin-top: var(--header-footer-height);
 }
 
 .title-item {
+  background-color: var(--color-background-item);
+  border-radius: var(--default-radius);
   margin-top: 50px;
-  width: 500px;
+  padding: 20px;
+  flex-basis: 500px;
+  flex-shrink: 1;
 }
 
 h1,

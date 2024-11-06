@@ -30,6 +30,7 @@
 import axios from "axios";
 
 export default {
+  name: "RecoveryPrompt",
   props: {
     show: {
       type: Boolean,
@@ -97,7 +98,8 @@ export default {
 }
 
 .modal-item {
-  border-radius: var(--header-footer-border);
+  box-shadow: 8px 8px 3px 0px var(--color-dark-grey);
+  border-radius: var(--default-radius);
   background: var(--color-light-grey);
   margin: 10px;
   padding: 20px;
@@ -107,8 +109,11 @@ export default {
 
 input {
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   width: 85%;
+  border-radius: var(--default-radius);
+  border: 1px solid var(--color-white);
+  font-size: var(--font-size-small);
 }
 
 .button-container {
@@ -125,7 +130,7 @@ button {
   row-gap: 50 px;
   border: 0;
   background-color: var(--color-header-footer);
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;

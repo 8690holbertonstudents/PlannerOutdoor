@@ -1,26 +1,23 @@
 <template>
-  <div id="app">
-    <div id="header-app">
-      <PageHeader />
-    </div>
-    <main class="main-content">
-      <router-view />
-    </main>
-    <div id="footer-app">
-      <PageFooter />
-    </div>
+  <div class="app-container">
+    <AnimatedBackgroundApp />
+    <PageHeader class="header" />
+    <router-view />
+    <PageFooter class="footer" />
   </div>
 </template>
 
 <script>
 import PageHeader from "@/components/PageHeader.vue";
 import PageFooter from "./components/PageFooter.vue";
+import AnimatedBackgroundApp from "./components/AnimatedBackgroundApp.vue";
 
 export default {
   name: "App",
   components: {
     PageHeader,
     PageFooter,
+    AnimatedBackgroundApp,
   },
 };
 </script>
@@ -33,13 +30,16 @@ export default {
   --color-medium-grey: #726a6a;
   --color-dark-grey: #353535;
   --color-error-msg: #c63434;
-  --color-header-footer: #209fe8;
+  --color-header-footer: rgba(32, 159, 232, 0.75);
+  --header-footer-opacity: 0.7;
   --color-background-modal: rgba(0, 0, 0, 0.5);
+  --color-background-item: rgba(255, 255, 255, 0.6);
   --header-footer-shadow: 5px 5px 5px var(--color-medium-grey);
   --modal-shadow: 30px 30px 30px var(--color-dark-grey);
-  --header-footer-height: 35px;
-  --header-footer-width: 98%;
-  --header-footer-border: 10px;
+  --header-footer-height: 50px;
+  --margin-header-footer: calc((var(--header-footer-height)) + 10px);
+  --header-footer-width: 100%;
+  --default-radius: 10px;
   --font-family: "Ubuntu", sans-serif;
   --font-size-small: 0.7rem;
   --font-size-medium: 1.2rem;
@@ -50,25 +50,38 @@ export default {
   --font-weight-bold: 700;
 }
 
-#app {
+html,
+body,
+.app-container {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+}
+
+.app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  overflow-y: auto;
+  justify-content: space-between;
+  align-items: stretch;
   font-family: var(--font-family);
 }
+/*
+body {
+  /*background: rgb(34, 193, 195);*/
+/*background: linear-gradient(
+    0deg,
+    rgba(34, 193, 195, 1) 0%,
+    rgba(253, 187, 45, 1) 100%
+  );
+}*/
 
-#app > #header-app {
-  flex-shrink: 0;
+.header {
+  position: fixed;
+  top: 0;
 }
 
-#app > #footer-app {
-  flex-shrink: 0;
-}
-
-.main-content {
-  display: flex;
-  flex: 1;
-  overflow-y: auto;
+.footer {
+  position: fixed;
+  bottom: 0;
 }
 </style>

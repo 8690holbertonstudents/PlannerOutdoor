@@ -122,18 +122,17 @@ export default {
 .create-account-container {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  /*flex-grow: 1;*/
   justify-content: flex-start;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 60px;
   gap: 30px;
 }
 
 .account-item {
-  background-color: var(--color-white);
-  box-shadow: var(--header-footer-shadow);
-  border: 2px solid var(--color-light-grey);
-  border-radius: var(--header-footer-border);
+  background-color: var(--color-background-item);
+  border: 1px solid var(--color-light-grey);
+  border-radius: var(--default-radius);
   margin: 10px;
   padding: 20px;
   width: 350px;
@@ -143,8 +142,10 @@ export default {
 }
 
 input {
+  border-radius: var(--default-radius);
+  border: solid 0px;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   width: 90%;
 }
 
@@ -162,7 +163,7 @@ button {
   row-gap: 50 px;
   border: 0;
   background-color: var(--color-header-footer);
-  border-radius: var(--header-footer-border);
+  border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;

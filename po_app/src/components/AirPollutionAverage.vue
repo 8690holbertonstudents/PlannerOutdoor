@@ -15,6 +15,7 @@
 
 <script>
 export default {
+  name: "AirPollutionAverage",
   props: {
     components: {
       type: Object,

@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  name: "ConvertToTime",
   props: {
     timestamp: {
       type: Number,

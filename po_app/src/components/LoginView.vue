@@ -1,25 +1,28 @@
 <template>
   <div>
-    <a
-      v-if="userLoggedIn"
-      @click.prevent="goToAccountManager"
-      class="login-link"
-    >
-      {{ username }} connected
-    </a>
-    <img
-      src="/images/logout_white.png"
-      alt="logout-img"
-      v-if="userLoggedIn"
-      class="logout-link"
-      @click.prevent="openLogoutModal"
-    />
-    <a v-else @click.prevent="goToLogin" class="login-link"> LOGIN </a>
-    <LogoutPrompt
-      v-if="showModal"
-      :show="showModal"
-      @close="showModal = false"
-    />
+    <span>
+      <a
+        v-if="userLoggedIn"
+        @click.prevent="goToAccountManager"
+        class="login-item"
+      >
+        {{ username }} connected
+      </a>
+    </span>
+    <span class="login-item">
+      <img
+        src="/images/logout_white.png"
+        alt="logout-img"
+        v-if="userLoggedIn"
+        @click.prevent="openLogoutModal"
+      />
+      <a v-else @click.prevent="goToLogin" class="login-link"> LOGIN </a>
+      <LogoutPrompt
+        v-if="showModal"
+        :show="showModal"
+        @close="showModal = false"
+      />
+    </span>
   </div>
 </template>
 
@@ -58,15 +61,19 @@ export default {
 
 <style scoped>
 .login-link {
-  padding-bottom: 5px;
   text-decoration: none;
   cursor: pointer;
 }
-#login-item img {
-  padding-right: 10px;
-  padding-left: 10px;
+
+.login-item {
+  vertical-align: middle;
+}
+
+img {
+  padding-right: 1rem;
+  padding-left: 1rem;
   padding-top: 2px;
-  height: 15px;
+  height: 25px;
   cursor: pointer;
 }
 </style>
