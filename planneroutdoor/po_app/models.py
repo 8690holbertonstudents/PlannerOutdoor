@@ -12,11 +12,11 @@ class UserManager(BaseUserManager):
         """
         """
         if not username:
-            raise ValueError('username is required')
+            raise ValueError("username is required")
         if not email:
-            raise ValueError('email is required')
+            raise ValueError("email is required")
         if not address:
-            raise ValueError('address is required')
+            raise ValueError("address is required")
 
         user = self.model(username=username,
                           email=self.normalize_email(email), address=address)
@@ -48,11 +48,11 @@ class Users(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'address']
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "address"]
 
     def save(self, *args, **kwargs):
-        if self.password and not self.password.startswith('pbkdf2_'):
+        if self.password and not self.password.startswith("pbkdf2_"):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
@@ -105,11 +105,11 @@ class UserActivities(models.Model):
     activity_id = models.ForeignKey(Activities, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user_id', 'activity_id')
+        unique_together = ("user_id", "activity_id")
         verbose_name_plural = "UserActivities"
 
     def __str__(self) -> str:
-        return f'{self.user_id.username} - {self.activity_id.activity_name}'
+        return f"{self.user_id.username} - {self.activity_id.activity_name}"
 
 
 class UserAllergens(models.Model):
@@ -120,11 +120,11 @@ class UserAllergens(models.Model):
     allergen_id = models.ForeignKey(Allergens, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user_id', 'allergen_id')
+        unique_together = ("user_id", "allergen_id")
         verbose_name_plural = "UserAllergens"
 
     def __str__(self) -> str:
-        return f'{self.user_id.username} - {self.allergen_id.allergen_name}'
+        return f"{self.user_id.username} - {self.allergen_id.allergen_name}"
 
 
 class PlannedActivities(models.Model):
@@ -138,8 +138,8 @@ class PlannedActivities(models.Model):
     end_date = models.DateField()
 
     class Meta:
-        unique_together = ('user_id', 'activity_id', 'start_date', 'end_date')
+        unique_together = ("user_id", "activity_id", "start_date", "end_date")
         verbose_name_plural = "PlannedActivities"
 
     def __str__(self) -> str:
-        return f'{self.user_id.username} - {self.activity_id.activity_name} - {self.start_date} - {self.end_date}'
+        return f"{self.user_id.username} - {self.activity_id.activity_name} - {self.start_date} - {self.end_date}"
