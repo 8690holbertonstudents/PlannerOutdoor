@@ -12,7 +12,8 @@
         :key="index"
         @click="selectCity(selection)"
       >
-        {{ selection.name }}, {{ selection.country }}
+        {{ selection.name ? selection.name : "Unknown" }},
+        {{ selection.country ? selection.country : "Unknown" }}
       </li>
     </ul>
   </div>
@@ -31,12 +32,12 @@ export default {
   },
   methods: {
     async fetchSelections() {
-      if (this.city.length > 2) {
+      if (this.city.length > 3) {
         try {
           const response = await axios.get(
             `http://localhost:8020/po_app/Geocode/?location=${this.city}`
           );
-          this.selections = response.data;
+          this.selections = response.data.data || [];
         } catch (error) {
           console.error("Error fetching city selections:", error);
           this.selections = [];
@@ -46,16 +47,20 @@ export default {
       }
     },
     selectCity(selection) {
-      this.city = `${selection.name}, ${selection.country}`;
-      this.selections = [];
-      this.$router.push({
-        name: "Weather",
-        query: {
-          lat: selection.lat,
-          lon: selection.lon,
-        },
-      });
-      this.city = "";
+      if (selection && selection.name && selection.country) {
+        this.city = `${selection.name}, ${selection.country}`;
+        this.selections = [];
+        this.$router.push({
+          name: "Weather",
+          query: {
+            lat: selection.lat,
+            lon: selection.lon,
+          },
+        });
+        this.city = "";
+      } else {
+        console.error("Invalid selection object:", selection);
+      }
     },
   },
 };

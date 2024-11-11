@@ -67,6 +67,7 @@ export default {
 
 .login-item {
   vertical-align: middle;
+  cursor: pointer;
 }
 
 img {

@@ -79,6 +79,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     @action(detail=False, methods=["get", "patch"], url_path="Account")
     def account(self, request):
         """
+        Retreive user informations and update method.
         """
         try:
             if request.method == "GET":
@@ -98,6 +99,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="Register")
     def register(self, request):
         """
+        Register new user.
         """
         try:
             serializer = self.get_serializer(data=request.data)
@@ -111,6 +113,9 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="RecoverPassword")
     def recover_password(self, request):
+        """
+        Recover password method.
+        """
         username = request.data.get("username")
         email = request.data.get("email")
         new_password = request.data.get("newPassword")
@@ -127,6 +132,9 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["delete"], url_path="DeleteAccount")
     def delete_account(self, request):
+        """
+        Delete account method.
+        """
         try:
             user = request.user
             user.delete()
@@ -142,6 +150,15 @@ class ActivitiesViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     queryset = Activities.objects.all()
     serializer_class = ActivitiesSerializer
 
+    def list(self, request, *args, **kwargs):
+        """
+        Overriding standard list method to add personalized response.
+        """
+        try:
+            return super().list(request, *args, **kwargs)
+        except Exception as e:
+            return Response({"error": "Error while reading activities"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class AllergensViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
@@ -149,6 +166,15 @@ class AllergensViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
     queryset = Allergens.objects.all()
     serializer_class = AllergensSerializer
+
+    def list(self, request, *args, **kwargs):
+        """
+        Overriding standard list method to add personalized response.
+        """
+        try:
+            return super().list(request, *args, **kwargs)
+        except Exception as e:
+            return Response({"error": "Error while reading allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
@@ -160,6 +186,9 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="GetUserActivities")
     def get_user_activities(self, request):
+        """
+        Retreive user activities.
+        """
         try:
             user = request.user
             user_activities = UserActivities.objects.filter(user_id=user)
@@ -170,18 +199,24 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="PostUserActivities")
     def post_user_activities(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            try:
+        """
+        Post user activities.
+        """
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
                 serializer.save()
                 return Response({"message": "User activities updated successfully", "data": serializer.data}, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({"error": "Error while updating user activities"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            return Response({"message": "Serializer errors", "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"message": "Serializer errors", "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "Error while updating user activities"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=["delete"], url_path="DeleteUserActivities/(?P<user_activity_id>[^/.]+)")
     def delete_user_activities(self, request, user_activity_id=None):
+        """
+        Delete user activities.
+        """
         try:
             user_activity = UserActivities.objects.get(
                 user_activity_id=user_activity_id)
@@ -198,27 +233,46 @@ class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     queryset = UserAllergens.objects.all()
     serializer_class = UserAllergensSerializer
 
-    @action(detail=False, methods=["get", "patch"], url_path="UserSelectedAllergens")
+    @action(detail=False, methods=["get"], url_path="GetUserAllergens")
     def get_user_allergens(self, request):
         """
+        Retreive user allergens.
         """
         try:
-            if request.method == "GET":
-                user_allergens = self.queryset.filter(user_id=request.user.id)
-                serializer = self.get_serializer(user_allergens, many=True)
-                return Response({"message": "", "data": serializer.data})
-            elif request.method == "PATCH":
-                selected_allergens = request.data.get("Allergens", [])
-                UserAllergens.objects.filter(user_id=request.user.id).delete()
-                for allergen_id in selected_allergens:
-                    UserAllergens.objects.create(
-                        user_id=request.user.id, allergen_id=allergen_id)
-                updated_allergens = self.queryset.filter(
-                    user_id=request.user.id)
-                serializer = self.get_serializer(updated_allergens, many=True)
-            return Response({"message": "User allergens updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+            user = request.user
+            user_allergens = UserAllergens.objects.filter(user_id=user)
+            serializer = self.get_serializer(user_allergens, many=True)
+            return Response({"message": "", "data": serializer.data}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": "Error occurred while processing method"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "Error while reading user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=["post"], url_path="PostUserAllergens")
+    def post_user_allergens(self, request):
+        """
+        Post user allergens.
+        """
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "User allergens updated successfully", "data": serializer.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message": "Serializer errors", "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "Error while updating user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=["delete"], url_path="DeleteUserAllergens/(?P<user_activity_id>[^/.]+)")
+    def delete_user_allergens(self, request, user_activity_id=None):
+        """
+        Delete user allergens.
+        """
+        try:
+            user_activity = UserAllergens.objects.get(
+                user_activity_id=user_activity_id)
+            user_activity.delete()
+            return Response({"message": f"UserActivity with id {user_activity_id} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({"error": "Error while deleting user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class PlannedActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
@@ -277,6 +331,9 @@ class GeoCodingViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
     def list(self, request):
+        """
+        Retrieve geographic coordinates for a specified location.
+        """
         location = request.query_params.get("location")
         if not location:
             return Response({"error": "Please provide a location"}, status=status.HTTP_400_BAD_REQUEST)

@@ -69,7 +69,7 @@ button {
   width: 80px;
   row-gap: 50 px;
   border: 0;
-  background-color: var(--color-header-footer);
+  background-color: var(--color-button);
   border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);

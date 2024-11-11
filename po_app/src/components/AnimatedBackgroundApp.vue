@@ -26,14 +26,14 @@ const backgroundImages = [
   "windsurfing-2298647.jpg",
 ];
 
-const transitionTime = 5000;
+const transitionTime = 8000;
 
 const transitionsBackground = [
-  "2s ease",
-  "2s linear",
-  "2s ease-in",
-  "2s ease-out",
-  "2s ease-in-out",
+  "4.3s ease",
+  "4.5s linear",
+  "3.6s ease-in",
+  "4.4s ease-out",
+  "3.8s ease-in-out",
 ];
 
 export default {

@@ -30,10 +30,12 @@ export default {
   --color-medium-grey: #726a6a;
   --color-dark-grey: #353535;
   --color-error-msg: #c63434;
+  --color-success-msg: #1d01a8;
   --color-header-footer: rgba(32, 159, 232, 0.75);
+  --color-button: rgba(32, 159, 232, 1);
   --header-footer-opacity: 0.7;
   --color-background-modal: rgba(0, 0, 0, 0.5);
-  --color-background-item: rgba(255, 255, 255, 0.6);
+  --color-background-item: rgba(255, 255, 255, 0.7);
   --header-footer-shadow: 5px 5px 5px var(--color-medium-grey);
   --modal-shadow: 30px 30px 30px var(--color-dark-grey);
   --header-footer-height: 50px;
@@ -65,15 +67,6 @@ body,
   align-items: stretch;
   font-family: var(--font-family);
 }
-/*
-body {
-  /*background: rgb(34, 193, 195);*/
-/*background: linear-gradient(
-    0deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
-}*/
 
 .header {
   position: fixed;

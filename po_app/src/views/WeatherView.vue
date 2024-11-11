@@ -72,12 +72,12 @@ export default {
         const lat = this.$route.query.lat;
         const lon = this.$route.query.lon;
         this.success = false;
-        const openWeatherMapApiResponse = await axios.get(
+        const response = await axios.get(
           `http://localhost:8020/po_app/Weather/?lat=${lat}&lon=${lon}`
         );
-        const cityData = openWeatherMapApiResponse.data.city;
+        const cityData = response.data.data.city;
         this.city = `${cityData.name}, ${cityData.country}`;
-        this.forecast = openWeatherMapApiResponse.data;
+        this.forecast = response.data.data;
         this.success = true;
       } catch (error) {
         console.error("Request error:", error);
@@ -152,7 +152,7 @@ export default {
 button {
   height: 30px;
   width: 80px;
-  background-color: var(--color-header-footer);
+  background-color: var(--color-button);
   border: 0;
   border-radius: var(--default-radius);
   font-family: var(--font-family);

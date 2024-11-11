@@ -2,8 +2,10 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    accessToken: null,
     userLoggedIn: false,
-    username: "",
+    username: null,
+    userId: null,
   },
   getters: {
     isLoggedIn(state) {
@@ -11,6 +13,9 @@ export default createStore({
     },
     getUsername(state) {
       return state.username;
+    },
+    getUserId(state) {
+      return state.userId;
     },
     getAccessToken(state) {
       return state.accessToken;
@@ -22,6 +27,9 @@ export default createStore({
     },
     setUsername(state, username) {
       state.username = username;
+    },
+    setUserId(state, userId) {
+      state.userId = userId;
     },
     setAccessToken(state, token) {
       state.accessToken = token;
@@ -41,9 +49,10 @@ export default createStore({
     },
   },
   actions: {
-    login({ commit }, { username, token }) {
+    login({ commit }, { username, userId, token }) {
       commit("setUserLoggedIn", true);
       commit("setUsername", username);
+      commit("setUserId", userId);
       commit("setAccessToken", token);
     },
     logout({ commit }) {

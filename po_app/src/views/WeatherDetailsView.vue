@@ -144,7 +144,7 @@ export default {
       try {
         const lat = this.$route.query.lat;
         const lon = this.$route.query.lon;
-        const openWeatherForecastResponse = await axios.get(
+        const forecastResponse = await axios.get(
           `http://localhost:8020/po_app/WeatherDetails/?lat=${lat}&lon=${lon}`,
           {
             headers: {
@@ -152,8 +152,8 @@ export default {
             },
           }
         );
-        this.forecastDetails = openWeatherForecastResponse.data;
-        const openWeatherPollutionResponse = await axios.get(
+        this.forecastDetails = forecastResponse.data.data;
+        const pollutionResponse = await axios.get(
           `http://localhost:8020/po_app/WeatherPollution/?lat=${lat}&lon=${lon}`,
           {
             headers: {
@@ -161,7 +161,7 @@ export default {
             },
           }
         );
-        this.pollutionDetails = openWeatherPollutionResponse.data;
+        this.pollutionDetails = pollutionResponse.data.data;
         this.filterSelectedDayData();
       } catch (error) {
         console.error("Request error:", error);

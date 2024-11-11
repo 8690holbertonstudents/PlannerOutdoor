@@ -4,16 +4,16 @@
       <h3 class="title-item">Account informations</h3>
       <div class="input-container">
         <label>Username:</label>
-        <input v-model="username" />
+        <input v-model="username" @focus="clearMessages" />
 
         <label>Email:</label>
-        <input v-model="email" type="email" />
+        <input v-model="email" type="email" @focus="clearMessages" />
 
         <label>Address:</label>
-        <input v-model="address" />
+        <input v-model="address" @focus="clearMessages" />
       </div>
-      <p v-if="successMsg">{{ successMsg }}</p>
-      <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
+      <p v-if="successAccountMsg" class="success">{{ successAccountMsg }}</p>
+      <p v-if="errorAccountMsg" class="error">{{ errorAccountMsg }}</p>
       <div class="button-container">
         <button type="submit">Update Account</button>
         <button @click="openDeleteAccountModal">Delete Account</button>
@@ -24,87 +24,37 @@
         @close="showDeleteAccountModal = false"
       />
     </form>
-    <div class="account-item">
-      <h3>Your prefered activities</h3>
-      <div
-        v-for="activity in activitiesList"
-        :key="activity.activity_id"
-        class="checkbox-container"
-      >
-        <label>
-          <input type="checkbox" :value="activity.activity_id" />
-          <span
-            @mouseover="showActivityDesc(activity)"
-            @mouseleave="hideActivityDesc(activity)"
-          >
-            {{ activity.activity_name }}
-          </span>
-        </label>
-        <p v-if="activity.showDescription" class="description">
-          {{ activity.activity_desc }}
-        </p>
-      </div>
-      <div class="button-container">
-        <button type="submit">Validate</button>
-        <!--button @click="openDeleteAccountModal">Delete Account</button-->
-      </div>
-    </div>
-    <div class="account-item">
-      <h3>Your knewn allergens</h3>
-      <div
-        v-for="allergen in allergensList"
-        :key="allergen.allergen_id"
-        class="checkbox-container"
-      >
-        <label>
-          <input type="checkbox" :value="allergen.allergen_id" />
-          <span
-            @mouseover="showAllergenDesc(allergen)"
-            @mouseleave="hideAllergenDesc(allergen)"
-          >
-            {{ allergen.allergen_name }}
-          </span>
-        </label>
-        <p v-if="allergen.showDescription" class="description">
-          {{ allergen.allergen_desc }}
-        </p>
-      </div>
-      <div class="button-container">
-        <button type="submit">Validate</button>
-        <!--button @click="openDeleteAccountModal">Delete Account</button-->
-      </div>
-    </div>
+    <FetchActivities :userIdUrl="userIdUrl" />
+    <FetchAllergens :userIdUrl="userIdUrl" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import DeleteAccountPrompt from "@/components/DeleteAccountPrompt.vue";
+import FetchActivities from "@/components/FetchActivities.vue";
+import FetchAllergens from "@/components/FetchAllergens.vue";
 
 export default {
   name: "AccountManagerView",
-  components: { DeleteAccountPrompt },
+  components: { DeleteAccountPrompt, FetchActivities, FetchAllergens },
   data() {
     return {
       username: "",
       email: "",
       address: "",
-      successMsg: "",
-      errorMsg: "",
+      successAccountMsg: "",
+      errorAccountMsg: "",
       showDeleteAccountModal: false,
-      activitiesList: [],
-      allergensList: [],
     };
   },
   created() {
     this.getUserAccountInfo();
-    this.fetchActivitiesList();
-    this.fetchAllergensList();
   },
   methods: {
     openDeleteAccountModal() {
-      this.errorMsg = "";
-      this.successMsg = "";
+      this.errorAccountMsg = "";
+      this.successAccountMsg = "";
       this.showDeleteAccountModal = true;
     },
     async getUserAccountInfo() {
@@ -117,80 +67,70 @@ export default {
             },
           }
         );
-        this.username = response.data.username;
-        this.email = response.data.email;
-        this.address = response.data.address;
+        this.userIdUrl = response.data.data.url;
+        this.userId = response.data.data.id;
+        this.username = response.data.data.username;
+        this.email = response.data.data.email;
+        this.address = response.data.data.address;
+        this.currentUsername = this.username;
+        this.currentEmail = this.email;
+        this.currentAddress = this.address;
+        this.errorAccountMsg = "";
       } catch (error) {
-        this.errorMsg = "Failed to load account information";
+        this.errorAccountMsg =
+          error.response?.data?.error || "An unexpected error occurred";
       }
     },
     async updateUserAccountInfo() {
       try {
-        await axios.put(
+        const dataToUpdate = {};
+        if (this.username !== this.currentUsername)
+          dataToUpdate.username = this.username;
+        if (this.email !== this.currentEmail) dataToUpdate.email = this.email;
+        if (this.address !== this.currentAddress)
+          dataToUpdate.address = this.address;
+        const response = await axios.patch(
           "http://localhost:8020/po_app/Users/Account/",
-          {
-            username: this.username,
-            email: this.email,
-            address: this.address,
-          },
+          dataToUpdate,
           {
             headers: {
               Authorization: `Bearer ${this.$store.getters.getAccessToken}`,
             },
           }
         );
-        this.errorMsg = "";
-        this.successMsg = "Account information updated successfully!";
+        this.errorAccountMsg = "";
+        this.successAccountMsg = response.data.message;
+        this.$store.commit("setUsername", response.data.data.username);
+        this.currentUsername = response.data.data.username;
+        this.currentEmail = response.data.data.email;
+        this.currentAddress = response.data.data.address;
       } catch (error) {
-        this.successMsg = "";
+        this.successAccountMsg = "";
+        let errorsSerializer = "";
         if (!this.showDeleteAccountModal) {
-          this.errorMsg = "Error appear while updating your information";
+          if (error.response?.data?.errors) {
+            errorsSerializer = Object.values(error.response.data.errors)
+              .flat()
+              .join("\n");
+          }
+          this.errorAccountMsg =
+            errorsSerializer ||
+            error.response?.data?.error ||
+            "An unexpected error occurred";
         } else {
-          this.errorMsg = "";
+          this.errorAccountMsg = "";
         }
       }
-    },
-    async fetchActivitiesList() {
-      try {
-        const response = await axios.get(
-          "http://localhost:8020/po_app/Activities/",
-          {
-            headers: {
-              Authorization: `Bearer ${this.$store.getters.getAccessToken}`,
-            },
-          }
-        );
-        this.activitiesList = response.data;
-      } catch (error) {
-        console.error("Error fetching activities list:", error);
-      }
-    },
-    async fetchAllergensList() {
-      try {
-        const response = await axios.get(
-          "http://localhost:8020/po_app/Allergens/",
-          {
-            headers: {
-              Authorization: `Bearer ${this.$store.getters.getAccessToken}`,
-            },
-          }
-        );
-        this.allergensList = response.data;
-      } catch (error) {
-        console.error("Error fetching allergens list:", error);
-      }
-    },
-    showActivityDesc(activity) {
-      activity.showDescription = true;
-    },
-    hideActivityDesc(activity) {
-      activity.showDescription = false;
     },
     showAllergenDesc(allergen) {
       allergen.showDescription = true;
     },
     hideAllergenDesc(allergen) {
       allergen.showDescription = false;
+    },
+    clearMessages() {
+      this.successAccountMsg = "";
+      this.errorAccountMsg = "";
     },
   },
 };
@@ -259,38 +199,15 @@ button {
   width: 90px;
   row-gap: 50 px;
   border: 0;
-  background-color: var(--color-header-footer);
+  background-color: var(--color-button);
   border-radius: var(--default-radius);
   font-family: var(--font-family);
   color: var(--color-white);
   cursor: pointer;
 }
 
-.checkbox-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
-  margin-left: 40px;
-  align-items: flex-start;
-  vertical-align: top;
-  width: 100%;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-  display: inline;
-  width: auto;
-  margin-right: 15px;
-}
-
-.description {
-  display: inline-block;
-  color: var(--color-header-footer);
-  padding: 5px;
-  border-radius: 4px;
-  margin-top: 5px;
-  font-size: var(--font-size-small);
-  max-width: 300px;
+.success {
+  color: var(--color-success-msg);
 }
 
 .error {
