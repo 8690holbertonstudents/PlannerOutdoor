@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
 from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from rest_framework import viewsets, permissions, status
@@ -76,6 +78,37 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UsersSerializer
 
+    """
+    Unsused standard methods hidden in API documentation.
+    """
+    @swagger_auto_schema(auto_schema=None)
+    def list(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def create(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def partial_update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def destroy(self, request, pk=None):
+        pass
+
+    """
+    Custom methods showned in API documentation.
+    """
+    @swagger_auto_schema(methods=["get", "patch"], tags=["Users"])
     @action(detail=False, methods=["get", "patch"], url_path="Account")
     def account(self, request):
         """
@@ -96,6 +129,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
             return Response({"error": "Error occurred while processing method"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(tags=["Users"])
     @action(detail=False, methods=["post"], url_path="Register")
     def register(self, request):
         """
@@ -111,6 +145,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
             return Response({"error": "Error occurred while processing method"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(tags=["Users"])
     @action(detail=False, methods=["post"], url_path="RecoverPassword")
     def recover_password(self, request):
         """
@@ -130,6 +165,7 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
         except Users.DoesNotExist:
             return Response({"error": "Username does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(tags=["Users"])
     @action(detail=False, methods=["delete"], url_path="DeleteAccount")
     def delete_account(self, request):
         """
@@ -149,6 +185,7 @@ class ActivitiesViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
     queryset = Activities.objects.all()
     serializer_class = ActivitiesSerializer
+    swagger_schema = None
 
     def list(self, request, *args, **kwargs):
         """
@@ -166,6 +203,7 @@ class AllergensViewSet(ActivitiesAllergensPerms, viewsets.ModelViewSet):
     """
     queryset = Allergens.objects.all()
     serializer_class = AllergensSerializer
+    swagger_schema = None
 
     def list(self, request, *args, **kwargs):
         """
@@ -184,6 +222,37 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     queryset = UserActivities.objects.all()
     serializer_class = UserActivitiesSerializer
 
+    """
+    Unsused standard methods hidden in API documentation.
+    """
+    @swagger_auto_schema(auto_schema=None)
+    def list(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def create(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def partial_update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def destroy(self, request, pk=None):
+        pass
+
+    """
+    Custom methods showned in API documentation.
+    """
+    @swagger_auto_schema(tags=["UserActivities"])
     @action(detail=False, methods=["get"], url_path="GetUserActivities")
     def get_user_activities(self, request):
         """
@@ -197,6 +266,7 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": "Error while reading user activities"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(tags=["UserActivities"])
     @action(detail=False, methods=["post"], url_path="PostUserActivities")
     def post_user_activities(self, request):
         """
@@ -212,6 +282,7 @@ class UserActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": "Error while updating user activities"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(tags=["UserActivities"])
     @action(detail=False, methods=["delete"], url_path="DeleteUserActivities/(?P<user_activity_id>[^/.]+)")
     def delete_user_activities(self, request, user_activity_id=None):
         """
@@ -233,6 +304,37 @@ class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     queryset = UserAllergens.objects.all()
     serializer_class = UserAllergensSerializer
 
+    """
+    Unsused standard methods hidden in API documentation.
+    """
+    @swagger_auto_schema(auto_schema=None)
+    def list(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def create(self, request):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def retrieve(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def partial_update(self, request, pk=None):
+        pass
+
+    @swagger_auto_schema(auto_schema=None)
+    def destroy(self, request, pk=None):
+        pass
+
+    """
+    Custom methods showned in API documentation.
+    """
+    @swagger_auto_schema(tags=["UserAllergens"])
     @action(detail=False, methods=["get"], url_path="GetUserAllergens")
     def get_user_allergens(self, request):
         """
@@ -246,6 +348,7 @@ class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": "Error while reading user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(tags=["UserAllergens"])
     @action(detail=False, methods=["post"], url_path="PostUserAllergens")
     def post_user_allergens(self, request):
         """
@@ -261,16 +364,17 @@ class UserAllergensViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": "Error while updating user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @action(detail=False, methods=["delete"], url_path="DeleteUserAllergens/(?P<user_activity_id>[^/.]+)")
-    def delete_user_allergens(self, request, user_activity_id=None):
+    @swagger_auto_schema(tags=["UserAllergens"])
+    @action(detail=False, methods=["delete"], url_path="DeleteUserAllergens/(?P<user_allergen_id>[^/.]+)")
+    def delete_user_allergens(self, request, user_allergen_id=None):
         """
         Delete user allergens.
         """
         try:
             user_activity = UserAllergens.objects.get(
-                user_activity_id=user_activity_id)
+                user_allergen_id=user_allergen_id)
             user_activity.delete()
-            return Response({"message": f"UserActivity with id {user_activity_id} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": f"UserActivity with id {user_allergen_id} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"error": "Error while deleting user allergens"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -281,6 +385,7 @@ class PlannedActivitiesViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
     """
     queryset = PlannedActivities.objects.all()
     serializer_class = PlannedActivitiesSerializer
+    swagger_schema = None
 
 
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -330,6 +435,15 @@ class GeoCodingViewSet(viewsets.ViewSet):
     """
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        tags=["Weather"],
+        manual_parameters=[
+            openapi.Parameter("location",
+                              openapi.IN_QUERY,
+                              description="Name of the city for geocoding",
+                              type=openapi.TYPE_STRING),
+        ]
+    )
     def list(self, request):
         """
         Retrieve geographic coordinates for a specified location.
@@ -359,6 +473,15 @@ class WeatherViewSet(viewsets.ViewSet):
     """
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        tags=["Weather"],
+        manual_parameters=[
+            openapi.Parameter(
+                "lat", openapi.IN_QUERY, description="Latitude obtained with geocode", type=openapi.TYPE_NUMBER),
+            openapi.Parameter(
+                "lon", openapi.IN_QUERY, description="Longitude obtained with geocode", type=openapi.TYPE_NUMBER),
+        ]
+    )
     def list(self, request):
         """
         Retrieve weather data for a specified city or by latitude and longitude.
@@ -393,6 +516,15 @@ class WeatherDetailsViewSet(viewsets.ViewSet):
     """
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        tags=["Weather"],
+        manual_parameters=[
+            openapi.Parameter(
+                "lat", openapi.IN_QUERY, description="Latitude obtained with geocode", type=openapi.TYPE_NUMBER),
+            openapi.Parameter(
+                "lon", openapi.IN_QUERY, description="Longitude obtained with geocode", type=openapi.TYPE_NUMBER),
+        ]
+    )
     def list(self, request):
         """
         Retrieve weather data for a specified city and a choosen day.
@@ -423,6 +555,15 @@ class WeatherPollutionViewSet(viewsets.ViewSet):
     """
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        tags=["Weather"],
+        manual_parameters=[
+            openapi.Parameter(
+                "lat", openapi.IN_QUERY, description="Latitude obtained with geocode", type=openapi.TYPE_NUMBER),
+            openapi.Parameter(
+                "lon", openapi.IN_QUERY, description="Longitude obtained with geocode", type=openapi.TYPE_NUMBER),
+        ]
+    )
     def list(self, request):
         """
         Retrieve pollution data for a specified city and a choosen day.

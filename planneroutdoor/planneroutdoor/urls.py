@@ -29,6 +29,11 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
+    patterns=[
+        (path("", include("po_app.urls"))),
+        (path('api/token/', CookieTokenObtainPairView.as_view())),
+        (path('api/token/refresh', CookieTokenRefreshView.as_view()))
+    ]
 )
 
 urlpatterns = [
