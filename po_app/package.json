@@ -33,5 +33,10 @@
     "eslint-plugin-vue": "^8.0.3",
     "jest": "^27.0.5",
     "prettier": "^2.4.1"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^axios$": "<rootDir>/tests/unit/__mocks__/axios.js"
+    }
   }
 }

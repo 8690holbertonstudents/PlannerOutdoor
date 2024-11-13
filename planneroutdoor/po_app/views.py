@@ -166,8 +166,8 @@ class UsersViewSet(DetermineOwnerOrAdmin, viewsets.ModelViewSet):
             return Response({"error": "Username does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
     @swagger_auto_schema(tags=["Users"])
-    @action(detail=False, methods=["delete"], url_path="DeleteAccount")
-    def delete_account(self, request):
+    @action(detail=True, methods=["delete"], url_path="DeleteAccount")
+    def delete_account(self, request, pk=None):
         """
         Delete account method.
         """
