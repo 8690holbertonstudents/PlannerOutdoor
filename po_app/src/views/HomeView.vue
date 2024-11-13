@@ -111,7 +111,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   margin-top: var(--header-footer-height);
   gap: 50px;
   flex-wrap: wrap;
@@ -123,6 +123,7 @@ export default {
   margin-top: 50px;
   padding: 20px;
   flex-basis: 500px;
+  margin-bottom: var(--header-footer-height);
 }
 
 .logo-container {

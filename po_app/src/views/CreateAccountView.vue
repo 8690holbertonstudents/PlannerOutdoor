@@ -2,18 +2,32 @@
   <div class="create-account-container">
     <form @submit.prevent="register" class="account-item">
       <h3>Create an Account</h3>
-      <input type="text" v-model="username" placeholder="Username" required />
-      <input type="email" v-model="email" placeholder="Email" required />
+      <input
+        type="text"
+        v-model="username"
+        placeholder="Username"
+        title="Maximum 50 characters"
+        required
+      />
+      <input
+        type="email"
+        v-model="email"
+        placeholder="Email"
+        title="Enter a valid email type xxx@xxxx.xx"
+        required
+      />
       <input
         type="password"
         v-model="password"
         placeholder="Password"
+        title="Valid password: At least 8 characters, one uppercase, one lowercase, one number, one special character, and all different"
         required
       />
       <input
         type="address"
         v-model="address"
         placeholder="Enter your home address"
+        title="Enter your home address"
         required
       />
       <button type="submit">Register</button>
