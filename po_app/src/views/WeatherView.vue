@@ -17,8 +17,8 @@
           <ConvertToDay :timestamp="item.dt" />
         </p>
         <p>
-          <ConvertToTemp :tempK="item.temp.day" unit="C" /> /
-          <ConvertToTemp :tempK="item.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="item.temp.day" /> °C /
+          <ConvertToFahrenheit :tempK="item.temp.day" /> °F
         </p>
         <img
           v-if="item.weather[0].icon"
@@ -41,11 +41,18 @@ import axios from "axios";
 import LoginPrompt from "@/components/LoginPrompt.vue";
 import ConvertToDate from "@/components/ConvertToDate.vue";
 import ConvertToDay from "@/components/ConvertToDay.vue";
-import ConvertToTemp from "@/components/ConvertToTemp.vue";
+import ConvertToCelcius from "@/components/ConvertToCelcius.vue";
+import ConvertToFahrenheit from "@/components/ConvertToFahrenheit.vue";
 
 export default {
   name: "WeatherView",
-  components: { LoginPrompt, ConvertToDate, ConvertToDay, ConvertToTemp },
+  components: {
+    LoginPrompt,
+    ConvertToDate,
+    ConvertToDay,
+    ConvertToCelcius,
+    ConvertToFahrenheit,
+  },
   data() {
     return {
       city: {},

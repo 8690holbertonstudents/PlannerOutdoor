@@ -28,44 +28,44 @@
         <h4>Real temperature</h4>
         <p>Morning:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.morn" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.morn" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.morn" /> °F
         </p>
         <p>Day:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.day" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.day" /> °F
         </p>
         <p>Evening:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.eve" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.eve" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.eve" /> °F
         </p>
         <p>Night:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.night" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.night" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.night" /> °F
         </p>
         <h4>"Feels like" temperature</h4>
         <p>Morning:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.feels_like.morn" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.feels_like.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.feels_like.morn" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.feels_like.morn" /> °F
         </p>
         <p>Day:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.feels_like.day" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.feels_like.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.feels_like.day" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.feels_like.day" /> °F
         </p>
         <p>Evening:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.eve" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.eve" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.eve" /> °F
         </p>
         <p>Night:</p>
         <p>
-          <ConvertToTemp :tempK="forecastDayData.temp.night" unit="C" /> /
-          <ConvertToTemp :tempK="forecastDayData.temp.day" unit="F" />
+          <ConvertToCelcius :tempK="forecastDayData.temp.night" /> °C /
+          <ConvertToFahrenheit :tempK="forecastDayData.temp.night" /> °F
         </p>
       </div>
       <div class="details-item">
@@ -102,7 +102,8 @@
 import axios from "axios";
 import ConvertToDate from "@/components/ConvertToDate.vue";
 import ConvertToDay from "@/components/ConvertToDay.vue";
-import ConvertToTemp from "@/components/ConvertToTemp.vue";
+import ConvertToCelcius from "@/components/ConvertToCelcius.vue";
+import ConvertToFahrenheit from "@/components/ConvertToFahrenheit.vue";
 import ConvertToTime from "@/components/ConverToTime.vue";
 import ConvertWindDirection from "@/components/ConvertWindDirection.vue";
 import AirPollutionAverage from "@/components/AirPollutionAverage.vue";
@@ -112,7 +113,8 @@ export default {
   components: {
     ConvertToDate,
     ConvertToDay,
-    ConvertToTemp,
+    ConvertToCelcius,
+    ConvertToFahrenheit,
     ConvertToTime,
     ConvertWindDirection,
     AirPollutionAverage,
@@ -185,13 +187,6 @@ export default {
 </script>
 
 <style scoped>
-/*body {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}*/
-
 .weather-details-container {
   display: flex;
   flex-direction: column;
@@ -206,7 +201,6 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  /*margin: 0% 1.5% 0% 1%;*/
   margin-bottom: var(--header-footer-height);
   padding-bottom: 20px;
 }
